@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use Exception;
 
 class UsersModel extends Model
 {
@@ -39,4 +40,23 @@ class UsersModel extends Model
 	protected $afterFind            = [];
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
+
+	public function findUserLogin(string $email, string $password)
+    {
+        $user = $this
+            ->where(['email' => $email])
+            ->first();
+		
+        if (!$user){
+			throw new Exception('User not found');
+		} else {
+			$compare = password_verify($password, $user['password']);
+			if (!$compare) {
+				throw new Exception("Password salah!");
+			}
+		}
+
+        return $user;
+		
+    }
 }

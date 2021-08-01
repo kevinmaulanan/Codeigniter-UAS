@@ -43,6 +43,10 @@ $routes->post('/auth/register', 'AuthController::register_post');
 $routes->post('/auth/login', 'AuthController::login_post');
 $routes->post('/auth/logout', 'Home::index');
 
+// Mobile
+$routes->get('/mobile/api/test', 'MobileController::get_user');
+$routes->post('/mobile/auth/login', 'MobileController::login');
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
