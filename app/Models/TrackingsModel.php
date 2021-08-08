@@ -3,19 +3,18 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
-use Exception;
 
-class UsersModel extends Model
+class TrackingsModel extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'users';
+	protected $table                = 'trackings';
 	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
-	protected $allowedFields        = ['email', 'password', 'status', 'role', 'name'];
+	protected $allowedFields        = [];
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -41,30 +40,25 @@ class UsersModel extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	public function findUserLogin(string $email, string $password)
-    {
-        $user = $this
-            ->where(['email' => $email])
-            ->first();
-		
-        if (!$user){
-			throw new Exception('User not found');
-		} else {
-			$compare = password_verify($password, $user['password']);
-			if (!$compare) {
-				throw new Exception("Password salah!");
-			}
-		}
-
-        return $user;
-		
-    }
-
 	public function getAll()
     {
         $data = $this
+			->join('users', 'users.id = trackings.user_id')
+			->select('trackings.*, users.name')
 			->get()
 			->getResultArray(); 
+
+        return $data;	
+    }
+
+	public function getInProgress($status)
+    {
+        $data = $this
+			->where(['status_request' => $status ])
+			->join('users', 'users.id = trackings.user_id')
+			->select('trackings.*, users.name')
+			->get()
+			->getResultArray();  
 
         return $data;	
     }

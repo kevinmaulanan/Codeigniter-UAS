@@ -5,8 +5,15 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\UsersModel;
 
+use CodeIgniter\HTTP\Response;
+use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\API\ResponseTrait;
+use Exception;
+use ReflectionException;
+
 class AuthController extends BaseController
 {
+	use ResponseTrait;
 
 	public function login()
 	{
@@ -20,27 +27,48 @@ class AuthController extends BaseController
 	
 	public function login_post()
 	{
-		$validate = $this->validate([
-            'email' => [
-                'rules' => 'required|valid_email',
-                'errors' => [
-                    'required' => '{field} Harus diisi',
-                    'valid_email' => 'Format Email Harus Valid'
-                ]
-            ],
-            'password' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => '{field} Harus diisi'
-                ]
-            ],
-        ]);
-
-		if (!$validate){
-			session()->setFlashdata('error', $this->validator->listErrors());
-            return redirect()->back()->withInput();
-		} 
-		return view("auth/login");
+		try
+		{
+			$validate = $this->validate([
+				'email' => [
+					'rules' => 'required|valid_email',
+					'errors' => [
+						'required' => '{field} Harus diisi',
+						'valid_email' => 'Format Email Harus Valid'
+					]
+				],
+				'password' => [
+					'rules' => 'required',
+					'errors' => [
+						'required' => '{field} Harus diisi'
+					]
+				],
+			]);
+	
+			if (!$validate){
+				session()->setFlashdata('error', $this->validator->listErrors());
+				return redirect()->back()->withInput();
+			} else {
+				// Request Input
+				$email = $this->request->getPost("email");
+				$password = $this->request->getPost("password");
+	
+				$model = new UsersModel();
+				$user = $model->findUserLogin($email, $password);
+				if ($user) {
+					$this->session->set('id', $user['id']);
+					$this->session->set('name', $user['name']);
+					$this->session->set('email', $user['email']);
+					$this->session->set('role', $user['role']);
+					$this->session->set('status', $user['status']);
+				}
+			}
+			return redirect("admin/home");
+		}
+		catch (Exception $exception) {
+            return redirect()->back()->withInput($exception->getMessage());
+        }
+		
 	}
 	
 	public function register_post()
@@ -86,6 +114,22 @@ class AuthController extends BaseController
 				]);
 				return redirect("auth/login")->with("success", "Register success");
 			}
+		}
+		catch (\Exception $e)
+		{
+			die($e->getMessage());
+		}
+		
+		
+	}
+
+	public function logout()
+	{
+		try
+		{
+			$array_items = ['id', 'name', 'email', 'role', 'status'];
+			$this->session->remove($array_items);
+			return redirect('auth/login');
 		}
 		catch (\Exception $e)
 		{

@@ -38,10 +38,16 @@ $routes->get('/users', 'Home::index');
 // Authentification
 $routes->get('/auth/login', 'AuthController::login');
 $routes->get('/auth/register', 'AuthController::register');
+$routes->get('/auth/logout', 'AuthController::logout');
 
 $routes->post('/auth/register', 'AuthController::register_post');
 $routes->post('/auth/login', 'AuthController::login_post');
-$routes->post('/auth/logout', 'Home::index');
+
+
+// Web
+$routes->get('/admin/home', 'AdminController::home');
+$routes->get('/admin/users', 'AdminController::users');
+$routes->get('/admin/tracking/(:any)', 'AdminController::tracking/$1');
 
 // Mobile
 $routes->get('/mobile/api/test', 'MobileController::get_user');
