@@ -63,7 +63,9 @@ class Filters extends BaseConfig
 	public $filters = [
 		'auth' => [
 			'before' => [
-				'mobile/api/*',
+				'mobile/user/*',
+				'mobile/tracking',
+				'mobile/transaction',
 			]
 		],
 	];

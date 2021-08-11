@@ -15,7 +15,7 @@ class UsersModel extends Model
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
-	protected $allowedFields        = ['email', 'password', 'status', 'role', 'name'];
+	protected $allowedFields        = ['id', 'email', 'password', 'status', 'role', 'name', 'limit'];
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -59,6 +59,36 @@ class UsersModel extends Model
         return $user;
 		
     }
+	
+	public function findUserByEmailAddress(string $email)
+    {
+        $user = $this
+            ->where(['email' => $email])
+            ->first();
+		
+        if (!$user){
+			throw new Exception('Not Authorization');
+		}
+
+        return $user;
+		
+    }
+	
+	public function findUserById($id)
+    {
+        $user = $this
+            ->where(['id' => $id])
+            ->first();
+		
+        if (!$user){
+			throw new Exception('Not Authorization');
+		}
+
+        return $user;
+		
+    }
+
+	
 
 	public function getAll()
     {

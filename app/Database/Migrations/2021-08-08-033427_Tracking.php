@@ -23,6 +23,9 @@ class Tracking extends Migration
 				'type' 			=> 'VARCHAR',
 				'constraint' 	=> '255',
 			],
+			'jumlah_klaim' => [
+				'type' 			=> 'INT',
+			],
 			'alamat' => [
 				'type'      	=> 'TEXT',
 			],
@@ -31,6 +34,10 @@ class Tracking extends Migration
 			],
 			'lokasi_kejadian' => [
 				'type'          => 'TEXT',
+			],
+			'jenis_perawatan' => [
+				'type' 			=> 'VARCHAR',
+				'constraint' 	=> '255',
 			],
 			'no_hp' => [
 				'type' 			=> 'VARCHAR',

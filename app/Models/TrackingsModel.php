@@ -14,7 +14,19 @@ class TrackingsModel extends Model
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
-	protected $allowedFields        = [];
+	protected $allowedFields        = [
+		'id',
+		'no_polis', 
+		'nama_tertanggung', 
+		'jenis_perawatan',
+		'jumlah_klaim',
+		'alamat',
+		'waktu_kejadian',
+		'lokasi_kejadian',
+		'no_hp',
+		'status_request',
+		'user_id',
+	];
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -24,8 +36,8 @@ class TrackingsModel extends Model
 	protected $deletedField         = 'deleted_at';
 
 	// Validation
-	protected $validationRules      = [];
-	protected $validationMessages   = [];
+	protected $validationRules = [];
+	protected $validationMessages = [];
 	protected $skipValidation       = false;
 	protected $cleanValidationRules = true;
 
@@ -40,11 +52,14 @@ class TrackingsModel extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	
+
 	public function getAll()
     {
         $data = $this
 			->join('users', 'users.id = trackings.user_id')
 			->select('trackings.*, users.name')
+			->orderBy('trackings.created_at', 'DESC')
 			->get()
 			->getResultArray(); 
 
@@ -57,6 +72,20 @@ class TrackingsModel extends Model
 			->where(['status_request' => $status ])
 			->join('users', 'users.id = trackings.user_id')
 			->select('trackings.*, users.name')
+			->orderBy('trackings.created_at', 'DESC')
+			->get()
+			->getResultArray();  
+
+        return $data;	
+    }
+	
+	public function getTrackingByUser($id)
+    {
+        $data = $this
+			->where(['users.id' => $id ])
+			->join('users', 'users.id = trackings.user_id')
+			->select('trackings.*, users.name')
+			->orderBy('trackings.created_at', 'DESC')
 			->get()
 			->getResultArray();  
 

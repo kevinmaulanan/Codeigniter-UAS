@@ -50,7 +50,9 @@ $routes->get('/admin/users', 'AdminController::users');
 $routes->get('/admin/tracking/(:any)', 'AdminController::tracking/$1');
 
 // Mobile
-$routes->get('/mobile/api/test', 'MobileController::get_user');
+$routes->get('/mobile/user/(:any)', 'MobileController::get_user');
+$routes->get('/mobile/tracking', 'MobileController::tracking_list');
+$routes->post('/mobile/transaction', 'MobileController::transaction');
 $routes->post('/mobile/auth/login', 'MobileController::login');
 
 /*
